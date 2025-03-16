@@ -1,16 +1,23 @@
 package Cliente;
+
 import java.net.*;
 import java.io.*;
+
 import Mensajes.LoginResponse;
 
 public class Jugador {
     Socket socket_login = null;
-    LoginResponse valores_login=null;
-    String id_usuario;
+    LoginResponse valores_login = null;
+    int id_usuario;
     String masterIp;
     int masterPort;
+
     public boolean hacer_login() {
 
+        /*establece una conexion tcp con el master y le solicita información sobre su ubicación,
+            validez del id y nombres de los tópicos en atcivemq para comunicar información del estado
+            del juego.
+        * */
         try {
             //puerto del servidor(gameMaster)
             //int serverPort = 49152;
@@ -19,9 +26,9 @@ public class Jugador {
             ObjectOutputStream out = new ObjectOutputStream(socket_login.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket_login.getInputStream());
 
-            out.writeUTF(this.id_usuario);            // UTF is a string encoding
+            out.writeUTF(Integer.toString(this.id_usuario));            // UTF is a string encoding
 
-            this.valores_login=(LoginResponse) in.readObject();
+            this.valores_login = (LoginResponse) in.readObject();
             //System.out.println("Received data: "+this.respuesta.toString());
 
         } catch (UnknownHostException | ClassNotFoundException e) {
@@ -41,5 +48,10 @@ public class Jugador {
             }
         }
         return this.valores_login.isStatus();
+    }
+
+
+    public void notifica_hit() {
+
     }
 }

@@ -12,8 +12,14 @@ public class Jugador {
     Socket hit_socket = null;
     LoginResponse valores_login = null;
     int id_usuario;
-    String masterIp;
-    int masterPort;
+    String master_login_Ip;
+    int master_login_Port;
+
+    public Jugador(String master_login_Ip, int master_login_Port,int id_usuario) {
+        this.master_login_Ip = master_login_Ip;
+        this.master_login_Port = master_login_Port;
+        this.id_usuario =id_usuario ;
+    }
 
     public boolean hacer_login() {
 
@@ -23,7 +29,7 @@ public class Jugador {
         * */
         try {
             //puerto del servidor(gameMaster)
-            this.socket_login = new Socket(this.masterIp, this.masterPort);
+            this.socket_login = new Socket(this.master_login_Ip, this.master_login_Port);
             //s = new Socket("127.0.0.1", serverPort);
             ObjectOutputStream out = new ObjectOutputStream(this.socket_login.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(this.socket_login.getInputStream());

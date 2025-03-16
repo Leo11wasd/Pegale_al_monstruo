@@ -1,11 +1,6 @@
 package Servidor;
 
-import jakarta.jms.Connection;
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.Destination;
-import jakarta.jms.JMSException;
-import jakarta.jms.MessageProducer;
-import jakarta.jms.Session;
+import jakarta.jms.*;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -15,6 +10,10 @@ import java.util.HashMap;
 import java.net.*;
 import java.io.*;
 
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class GameMaster {
     private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;
     private static String subjectMonstruo = "PegaleAlMonstruo";
@@ -23,7 +22,7 @@ public class GameMaster {
 
     private int golpes; //golpes necesarios para ganar un juego
     private int tiempoEnvios;
-    private HashMap<String, Integer> puntaje;
+    private ConcurrentHashMap<String, Integer> puntaje;
 
     //Objetos del JMS
     private Connection connection;
@@ -35,6 +34,10 @@ public class GameMaster {
     private int puertoLogin=49152;
     private int puertoHit=49153;
 
+    //Ganador Actual
+    private String ganadorActual;
+    private int tiempoMinimo;
+    public static final int mx = Integer.MAX_VALUE;
 
     public GameMaster(int golpes,int tiempoEnvios) {
         this.golpes = golpes;
@@ -59,7 +62,12 @@ public class GameMaster {
             this.producerMonstruo = session.createProducer(monstruoDestination);
             this.producerGanador  = session.createProducer(ganadorDestination);
 
+            //Inicializa el Map de puntaje
+            puntaje = new ConcurrentHashMap<>();
 
+            //Inicializa al ganador temporal
+            ganadorActual = "";
+            tiempoMinimo = mx;
 
         } catch (JMSException e) {
             e.printStackTrace();
@@ -99,10 +107,45 @@ public class GameMaster {
 
 
         while(true){
+            try {
+                juegaRonda();
+            } catch (InterruptedException e) {
+               e.printStackTrace();
+            }
 
+            //Se manda al ganador.
+            System.out.println("LLEGUE: "+ganadorActual);
+            System.out.println("Puntos: "+puntaje.get(ganadorActual));
+            sendGanadorEvent("El ganador de este juego es : " + ganadorActual+". El siguiente juego comenzara pronto.");
+
+
+            //Se limpia el mapa de puntajes
+            for (Map.Entry<String, Integer> entry : puntaje.entrySet()) {
+                entry.setValue(0);
+            }
+
+            //Se limpia el ganador actual
+            ganadorActual="";
+            tiempoMinimo=mx;
         }
     }
 
+    public void juegaRonda() throws InterruptedException {
+        boolean hayGanador = false;
+        Random random = new Random();
+
+        while(!hayGanador){
+            int casilla = random.nextInt(9) + 1;
+            sendMonstruoEvent(String.valueOf(casilla));
+
+            Thread.sleep(tiempoEnvios);
+
+            if(ganadorActual != ""){
+                hayGanador = true;
+            }
+        }
+
+    }
     public boolean idValido(String id) {
         return !puntaje.containsKey(id);
     }
@@ -126,5 +169,34 @@ public class GameMaster {
 
     public void registrarJugador(String idJugador) {
         puntaje.put(idJugador,0);
+    }
+
+    public void sendMonstruoEvent(String msg) {
+        try {
+            TextMessage textMessage = session.createTextMessage(msg);
+            producerMonstruo.send(textMessage);
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendGanadorEvent(String msg) {
+        try {
+            TextMessage textMessage = session.createTextMessage(msg);
+            producerGanador.send(textMessage);
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void añadePuntaje(String id,int tiempo) {
+        puntaje.put(id,puntaje.get(id)+1);
+
+        if(puntaje.get(id)==golpes){
+            if(tiempo<tiempoMinimo){
+                ganadorActual=id;
+                tiempoMinimo=tiempo;
+            }
+        }
     }
 }

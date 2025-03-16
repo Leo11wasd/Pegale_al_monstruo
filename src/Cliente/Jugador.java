@@ -58,7 +58,7 @@ public class Jugador {
             ObjectOutputStream out = new ObjectOutputStream(socket_login.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket_login.getInputStream());
 
-            //creo q ya no recibe nada, solamente envia
+            //creo q ya no recibe nada, solamente envia.
             HitMessage mensajeHit=new HitMessage(Integer.toString(this.id_usuario),tiempo_logico);
             out.writeObject(mensajeHit);
         }      // UTF is a string encoding

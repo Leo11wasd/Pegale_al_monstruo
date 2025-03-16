@@ -62,6 +62,13 @@ public class Jugador {
         return this.valores_login.isStatus();
     }
 
+    public void inicializa_escucha_Monstruo(){
+
+    }
+    public void inicializa_escucha_Ganador(){
+
+    }
+
 
     public void notifica_hit() {
         try {

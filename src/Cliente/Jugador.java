@@ -5,6 +5,8 @@ import java.io.*;
 
 import Mensajes.LoginResponse;
 import Mensajes.HitMessage;
+import jakarta.jms.*;
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 
 public class Jugador {
@@ -15,6 +17,7 @@ public class Jugador {
     String master_login_Ip;
     int master_login_Port;
     int hitCounter;
+
 
     public Jugador(String master_login_Ip, int master_login_Port, int id_usuario) {
         this.master_login_Ip = master_login_Ip;
@@ -62,11 +65,55 @@ public class Jugador {
         return this.valores_login.isStatus();
     }
 
-    public void inicializa_escucha_Monstruo(){
+    public void inicializa_escucha_Monstruo() {
+        Thread monstruoListenerThread = new Thread(() -> {
+            try {
+                ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(this.valores_login.getUrl());
+                Connection jmsConnection = factory.createConnection();
+                jmsConnection.start();
+                Session jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                Destination monstruoTopic = jmsSession.createTopic(this.valores_login.getSubjectMosntruos());
+                MessageConsumer monstruoConsumer = jmsSession.createConsumer(monstruoTopic);
 
+                while (true) {
+                    Message message = monstruoConsumer.receive();
+                    if (message instanceof TextMessage) {
+                        String monstruoMsg = ((TextMessage) message).getText();
+                        System.out.println("Mensaje de monstruo recibido: " + monstruoMsg);
+                        // Al recibir un mensaje de monstruo, se envía un hit
+
+                        //avisa que llegó un monstruo
+
+
+                    }
+                }
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        });
     }
-    public void inicializa_escucha_Ganador(){
 
+    public void inicializa_escucha_Ganador() {
+        Thread ganadorListenerThread = new Thread(() -> {
+            try {
+                ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(this.valores_login.getUrl());
+                Connection jmsConnection = factory.createConnection();
+                jmsConnection.start();
+                Session jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                Destination ganadorTopic = jmsSession.createTopic(this.valores_login.getSubjectMosntruos());
+                MessageConsumer ganadorConsumer = jmsSession.createConsumer(ganadorTopic);
+
+                while (true) {
+                    Message message = ganadorConsumer.receive();
+                    if (message instanceof TextMessage) {
+                        String ganadorMsg = ((TextMessage) message).getText();
+                        System.out.println("Mensaje de ganador recibido: " + ganadorMsg);
+                    }
+                }
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 

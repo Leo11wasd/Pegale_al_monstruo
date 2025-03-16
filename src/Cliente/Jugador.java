@@ -5,7 +5,7 @@ import Mensajes.LoginResponse;
 
 public class Jugador {
     Socket socket_login = null;
-    LoginResponse respuesta=null;
+    LoginResponse valores_login=null;
     String id_usuario;
     String masterIp;
     int masterPort;
@@ -21,7 +21,7 @@ public class Jugador {
 
             out.writeUTF(this.id_usuario);            // UTF is a string encoding
 
-            this.respuesta=(LoginResponse) in.readObject();
+            this.valores_login=(LoginResponse) in.readObject();
             //System.out.println("Received data: "+this.respuesta.toString());
 
         } catch (UnknownHostException | ClassNotFoundException e) {
@@ -40,6 +40,6 @@ public class Jugador {
                 System.out.println("close:" + e.getMessage());
             }
         }
-        return this.respuesta.isStatus();
+        return this.valores_login.isStatus();
     }
 }

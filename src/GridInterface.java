@@ -7,6 +7,7 @@ import java.net.URL;
 public class GridInterface extends JFrame {
 
     private JLabel[] labels = new JLabel[9];
+    public boolean dio_click = false;
 
     public GridInterface() {
         setTitle("Grid Interface");
@@ -50,31 +51,31 @@ public class GridInterface extends JFrame {
     // Métodos vacíos para manejar clics en los botones
     private void onButtonClick(int index) {
         switch (index) {
-            case 0:
+            case 1:
                 button1Clicked();
                 break;
-            case 1:
+            case 2:
                 button2Clicked();
                 break;
-            case 2:
+            case 3:
                 button3Clicked();
                 break;
-            case 3:
+            case 4:
                 button4Clicked();
                 break;
-            case 4:
+            case 5:
                 button5Clicked();
                 break;
-            case 5:
+            case 6:
                 button6Clicked();
                 break;
-            case 6:
+            case 7:
                 button7Clicked();
                 break;
-            case 7:
+            case 8:
                 button8Clicked();
                 break;
-            case 8:
+            case 9:
                 button9Clicked();
                 break;
         }
@@ -95,39 +96,80 @@ public class GridInterface extends JFrame {
         }
     }
 
+    public void muestra_topo(int i, int j) {
+        int pos = (i * 3) + j;
+        setImageToLabel(pos, "/assets/topo.png");
+    }
+
     private void button1Clicked() {
         /* Acción para el botón 1 */
         // verificamos si el topo esta aqui
-
+        setImageToLabel(1, "/assets/pasto.jpeg");
+        dio_click = true;
         //si si esta, mandamos un mensaje tcp
     }
-    public void muestra_topo(int i,int j){
-        int pos=(i*3)+j;
-        setImageToLabel(pos, "/assets/topo.png");
+
+    private void button2Clicked() {
+
+        setImageToLabel(2, "/assets/pasto.jpeg");
+        dio_click = true;
     }
-    private void button2Clicked() { /* la misma idea del 1 */ }
 
-    private void button3Clicked() { /* la misma idea del 1 */ }
+    private void button3Clicked() {
 
-    private void button4Clicked() { /* la misma idea del 1 */ }
+        setImageToLabel(3, "/assets/pasto.jpeg");
+        dio_click = true;
+    }
 
-    private void button5Clicked() { /* la misma idea del 1 */ }
+    private void button4Clicked() {
 
-    private void button6Clicked() { /* la misma idea del 1 */ }
+        setImageToLabel(4, "/assets/pasto.jpeg");
+        dio_click = true;
+    }
 
-    private void button7Clicked() { /* la misma idea del 1 */ }
+    private void button5Clicked() {
+        setImageToLabel(5, "/assets/pasto.jpeg");
+        dio_click = true;
+    }
 
-    private void button8Clicked() { /* la misma idea del 1 */}
+    private void button6Clicked() {
+        setImageToLabel(6, "/assets/pasto.jpeg");
+        dio_click = true;
+    }
 
-    private void button9Clicked() { /* la misma idea del 1 */ }
+    private void button7Clicked() {
+        setImageToLabel(7, "/assets/pasto.jpeg");
+        dio_click = true;
+    }
+
+    private void button8Clicked() {
+        setImageToLabel(8, "/assets/pasto.jpeg");
+        dio_click = true;
+    }
+
+    private void button9Clicked() {
+        setImageToLabel(9, "/assets/pasto.jpeg");
+        dio_click = true;
+    }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                GridInterface interfaz=new GridInterface();
-                //System.out.println(i+" "+j+" "+pos);
+
+        int coordenadas, i, j;
+        GridInterface interfaz = new GridInterface();
+        int cont = 0;
+        while (cont < 10) {
+            coordenadas = (int) (Math.random() * (8));
+            i = coordenadas / 3;
+            j = coordenadas % 3;
+            interfaz.muestra_topo(i, j);
+            interfaz.dio_click = false;
+            while (interfaz.dio_click==false) {
             }
-        });
+            System.out.println("ya sali");
+            interfaz.dio_click = true;
+            System.out.println("van :" + cont);
+            cont++;
+        }
+
     }
 }

@@ -2,12 +2,14 @@ package Cliente;
 
 import java.net.*;
 import java.io.*;
+
 import Mensajes.LoginResponse;
 import Mensajes.HitMessage;
 
 
 public class Jugador {
     Socket socket_login = null;
+    Socket hit_socket = null;
     LoginResponse valores_login = null;
     int id_usuario;
     String masterIp;
@@ -21,10 +23,10 @@ public class Jugador {
         * */
         try {
             //puerto del servidor(gameMaster)
-            socket_login = new Socket(this.masterIp, this.masterPort);
+            this.socket_login = new Socket(this.masterIp, this.masterPort);
             //s = new Socket("127.0.0.1", serverPort);
-            ObjectOutputStream out = new ObjectOutputStream(socket_login.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(socket_login.getInputStream());
+            ObjectOutputStream out = new ObjectOutputStream(this.socket_login.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(this.socket_login.getInputStream());
 
             out.writeUTF(Integer.toString(this.id_usuario));            // UTF is a string encoding
 
@@ -41,8 +43,8 @@ public class Jugador {
             System.out.println("IO:" + e.getMessage());
 
         } finally {
-            if (socket_login != null) try {
-                socket_login.close();
+            if (this.socket_login != null) try {
+                this.socket_login.close();
             } catch (IOException e) {
                 System.out.println("close:" + e.getMessage());
             }
@@ -53,13 +55,13 @@ public class Jugador {
 
     public void notifica_hit(int tiempo_logico) {
         try {
-            socket_login = new Socket(this.valores_login.getUrl(), this.valores_login.getPuertoHit());
+            if (this.hit_socket == null) {
+                this.hit_socket = new Socket(this.valores_login.getUrl(), this.valores_login.getPuertoHit());
+            }
             //s = new Socket("127.0.0.1", serverPort);
-            ObjectOutputStream out = new ObjectOutputStream(socket_login.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(socket_login.getInputStream());
-
+            ObjectOutputStream out = new ObjectOutputStream(this.socket_login.getOutputStream());
             //creo q ya no recibe nada, solamente envia.
-            HitMessage mensajeHit=new HitMessage(Integer.toString(this.id_usuario),tiempo_logico);
+            HitMessage mensajeHit = new HitMessage(Integer.toString(this.id_usuario), tiempo_logico);
             out.writeObject(mensajeHit);
         }      // UTF is a string encoding
         catch (Exception e) {

@@ -20,7 +20,6 @@ public class Jugador {
         * */
         try {
             //puerto del servidor(gameMaster)
-            //int serverPort = 49152;
             socket_login = new Socket(this.masterIp, this.masterPort);
             //s = new Socket("127.0.0.1", serverPort);
             ObjectOutputStream out = new ObjectOutputStream(socket_login.getOutputStream());

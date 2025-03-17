@@ -9,7 +9,16 @@ import java.net.URL;
 public class GridInterface extends JFrame {
 
     private JLabel[] labels = new JLabel[9];
-    public boolean dio_click = false;
+    public boolean tiene_topo1 = false;
+    public boolean tiene_topo2 = false;
+    public boolean tiene_topo3 = false;
+    public boolean tiene_topo4 = false;
+    public boolean tiene_topo5 = false;
+    public boolean tiene_topo6 = false;
+    public boolean tiene_topo7 = false;
+    public boolean tiene_topo8 = false;
+    public boolean tiene_topo0 = false;
+
 
     public GridInterface() {
         setTitle("Grid Interface");
@@ -45,7 +54,7 @@ public class GridInterface extends JFrame {
         setVisible(true);
 
         for (int i = 0; i < 9; i++) {
-            setImageToLabel(i, "/assets/pasto.jpeg");
+            setImageToLabel(i, false);
 
         }
     }
@@ -82,11 +91,20 @@ public class GridInterface extends JFrame {
                 break;
         }
         // Cargar imagen al hacer clic desde la carpeta assets
-        setImageToLabel(index, "/assets/pasto.jpeg");
+        setImageToLabel(index, false);
     }
 
     // Método para colocar una imagen en el JLabel correspondiente
-    public void setImageToLabel(int index, String imagePath) {
+    public void setImageToLabel(int index, boolean poner_topo) {
+        String imagePath;
+        if (poner_topo) {
+            System.out.println("poner_topo");
+            imagePath = "/assets/topo.png";
+
+        } else {
+            System.out.printf("poner_pasto");
+            imagePath = "/assets/pasto.jpeg";
+        }
         URL imageURL = getClass().getResource(imagePath);
         if (imageURL != null) {
             ImageIcon icon = new ImageIcon(imageURL);
@@ -98,63 +116,125 @@ public class GridInterface extends JFrame {
         }
     }
 
-    public void muestra_topo(int i, int j) {
-        int pos = (i * 3) + j;
-        setImageToLabel(pos, "/assets/topo.png");
+    public void limpiar() {
+        for (int i = 0; i < 9; i++) {
+            setImageToLabel(i, false);
+            marca(i,false);
+        }
+    }
+
+    public void marca(int pos, boolean valor) {
+        switch (pos) {
+            case 0:
+                tiene_topo0 = valor;
+                break;
+            case 1:
+                tiene_topo1 = valor;
+                break;
+            case 2:
+                tiene_topo2 = valor;
+                break;
+            case 3:
+                tiene_topo3 = valor;
+                break;
+            case 4:
+                tiene_topo4 = valor;
+                break;
+            case 5:
+                tiene_topo5 = valor;
+                break;
+            case 6:
+                tiene_topo6 = valor;
+                break;
+            case 7:
+                tiene_topo7 = valor;
+                break;
+            case 8:
+                tiene_topo8 = valor;
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void muestra_topo(int pos) {
+        //int pos = (i * 3) + j;
+        System.out.println("Pos: " + pos);
+        setImageToLabel(pos, true);
+        marca(pos, true);
     }
 
     private void button1Clicked() {
-        /* Acción para el botón 1 */
-        // verificamos si el topo esta aqui
-        setImageToLabel(1, "/assets/pasto.jpeg");
-        dio_click = true;
-        //si si esta, mandamos un mensaje tcp
+        setImageToLabel(0, false);
+        //verificamos si el topo esta aqui
+        if (tiene_topo0) {
+            marca(0, false);
+            //manda el mensaje
+        }
     }
 
     private void button2Clicked() {
+        setImageToLabel(1, false);
+        //verificamos si el topo esta aqui
+        if (tiene_topo1) {
+            marca(1, false);
+            //manda el mensaje
 
-        setImageToLabel(2, "/assets/pasto.jpeg");
-        dio_click = true;
+        }
     }
 
     private void button3Clicked() {
-
-        setImageToLabel(3, "/assets/pasto.jpeg");
-        dio_click = true;
+        setImageToLabel(2, false);
+        //verificamos si el topo esta aqui
+        if (tiene_topo2) {
+            marca(0, false);
+            //manda el mensaje
+        }
     }
 
     private void button4Clicked() {
-
-        setImageToLabel(4, "/assets/pasto.jpeg");
-        dio_click = true;
+        setImageToLabel(3, false);
+        if (tiene_topo3) {
+            marca(3, false);
+        }
     }
 
     private void button5Clicked() {
-        setImageToLabel(5, "/assets/pasto.jpeg");
-        dio_click = true;
+        setImageToLabel(4, false);
+        if (tiene_topo4) {
+            marca(4, false);
+        }
     }
 
     private void button6Clicked() {
-        setImageToLabel(6, "/assets/pasto.jpeg");
-        dio_click = true;
+        setImageToLabel(5, false);
+        if (tiene_topo5) {
+            marca(5, false);
+        }
     }
 
     private void button7Clicked() {
-        setImageToLabel(7, "/assets/pasto.jpeg");
-        dio_click = true;
+        setImageToLabel(6, false);
+        if (tiene_topo6) {
+            marca(6, false);
+        }
     }
 
     private void button8Clicked() {
-        setImageToLabel(8, "/assets/pasto.jpeg");
-        dio_click = true;
+        setImageToLabel(7, false);
+        if (tiene_topo7) {
+            marca(7, false);
+        }
     }
 
     private void button9Clicked() {
-        setImageToLabel(9, "/assets/pasto.jpeg");
-        dio_click = true;
+        setImageToLabel(8, false);
+        if (tiene_topo8) {
+            marca(8, false);
+        }
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 
         int coordenadas, i, j;
         GridInterface interfaz = new GridInterface();
@@ -173,5 +253,5 @@ public class GridInterface extends JFrame {
             cont++;
         }
 
-    }
+    }*/
 }

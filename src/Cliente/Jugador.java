@@ -100,14 +100,14 @@ public class Jugador {
                         coordenadas--;
 
                         //limpiamos el tablero
-                        for (int i = 0; i < 9; i++) {
-                            this.tablero.setImageToLabel(i, "/assets/pasto.jpeg");
-                        }
+                        this.tablero.limpiar();
                         //ponemos el nuevo topo
-                        int i = coordenadas / 3;
-                        int j = coordenadas % 3;
-                        this.tablero.muestra_topo(i, j);
+                        //int i = coordenadas / 3;
+                        //int j = coordenadas % 3;
+                        this.tablero.muestra_topo(coordenadas);
                     }
+
+
                 }
             } catch (JMSException e) {
                 e.printStackTrace();
@@ -141,7 +141,6 @@ public class Jugador {
                                 JOptionPane.showMessageDialog(null, "Perdiste :c", "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
                             }
                         }
-                        id_ganador = -1;
                     }
                 }
             } catch (JMSException e) {

@@ -1,3 +1,5 @@
+package Cliente;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -84,7 +86,7 @@ public class GridInterface extends JFrame {
     }
 
     // Método para colocar una imagen en el JLabel correspondiente
-    private void setImageToLabel(int index, String imagePath) {
+    public void setImageToLabel(int index, String imagePath) {
         URL imageURL = getClass().getResource(imagePath);
         if (imageURL != null) {
             ImageIcon icon = new ImageIcon(imageURL);

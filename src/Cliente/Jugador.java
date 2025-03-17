@@ -8,15 +8,18 @@ import Mensajes.HitMessage;
 import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
+import javax.swing.*;
+
 
 public class Jugador {
     Socket socket_login = null;
     Socket hit_socket = null;
     LoginResponse valores_login = null;
-    int id_usuario;
+    int id_usuario = 0;
     String master_login_Ip;
     int master_login_Port;
     int hitCounter;
+    GridInterface tablero;
 
 
     public Jugador(String master_login_Ip, int master_login_Port, int id_usuario) {
@@ -24,6 +27,8 @@ public class Jugador {
         this.master_login_Port = master_login_Port;
         this.id_usuario = id_usuario;
         this.hitCounter = 0;
+        tablero = new GridInterface();
+
     }
 
     public boolean hacer_login() {
@@ -62,7 +67,14 @@ public class Jugador {
                 System.out.println("close:" + e.getMessage());
             }
         }
-        return this.valores_login.isStatus();
+        if(this.valores_login==null){
+            System.out.println("Valores:null");
+            return false;
+        }
+        else{
+            System.out.println("se realizo la conexión con "+this.master_login_Ip+":"+this.master_login_Port);
+            return this.valores_login.isStatus();
+        }
     }
 
     public void inicializa_escucha_Monstruo() {
@@ -77,20 +89,31 @@ public class Jugador {
 
                 while (true) {
                     Message message = monstruoConsumer.receive();
+                    System.out.println("escuchando");
                     if (message instanceof TextMessage) {
+                        System.out.println("Mensaje recibido: " + message.toString());
                         String monstruoMsg = ((TextMessage) message).getText();
                         System.out.println("Mensaje de monstruo recibido: " + monstruoMsg);
-                        // Al recibir un mensaje de monstruo, se envía un hit
+                        // Al recibir un mensaje de monstruo, se actualiza el grid
+                        int coordenadas = Integer.parseInt(monstruoMsg);
+                        //0 indexamos
+                        coordenadas--;
 
-                        //avisa que llegó un monstruo
-
-
+                        //limpiamos el tablero
+                        for (int i = 0; i < 9; i++) {
+                            this.tablero.setImageToLabel(i, "/assets/pasto.jpeg");
+                        }
+                        //ponemos el nuevo topo
+                        int i = coordenadas / 3;
+                        int j = coordenadas % 3;
+                        this.tablero.muestra_topo(i, j);
                     }
                 }
             } catch (JMSException e) {
                 e.printStackTrace();
             }
         });
+        monstruoListenerThread.start();
     }
 
     public void inicializa_escucha_Ganador() {
@@ -100,20 +123,32 @@ public class Jugador {
                 Connection jmsConnection = factory.createConnection();
                 jmsConnection.start();
                 Session jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                Destination ganadorTopic = jmsSession.createTopic(this.valores_login.getSubjectMosntruos());
+                Destination ganadorTopic = jmsSession.createTopic(this.valores_login.getSubjectGanador());
                 MessageConsumer ganadorConsumer = jmsSession.createConsumer(ganadorTopic);
 
                 while (true) {
                     Message message = ganadorConsumer.receive();
                     if (message instanceof TextMessage) {
                         String ganadorMsg = ((TextMessage) message).getText();
-                        System.out.println("Mensaje de ganador recibido: " + ganadorMsg);
+                        //el mensaje que llega es "El ganador de este juego es : " + ganadorActual+". El siguiente juego comenzara pronto."
+                        //System.out.println("Mensaje de ganador recibido: " + ganadorMsg);
+                        int id_ganador = Integer.parseInt(ganadorMsg);
+                        System.out.println("idganador "+id_ganador);
+                        if(id_ganador!=-1){
+                            if (id_ganador == this.id_usuario) {
+                                JOptionPane.showMessageDialog(null, "Dale campeon, dale campeon, dale campeon, dale campeon", "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Perdiste :c", "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
+                            }
+                        }
+                        id_ganador = -1;
                     }
                 }
             } catch (JMSException e) {
                 e.printStackTrace();
             }
         });
+        ganadorListenerThread.start();
     }
 
 
@@ -134,5 +169,16 @@ public class Jugador {
         catch (Exception e) {
             System.out.println("exception:" + e.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        Jugador jugador = new Jugador("127.0.0.1", 49152, 0);
+        jugador.hacer_login();
+        jugador.inicializa_escucha_Monstruo();
+        jugador.inicializa_escucha_Ganador();
+        System.out.println("Puerto hit "+jugador.valores_login.getPuertoHit());
+        System.out.println("subject ganador "+jugador.valores_login.getSubjectGanador());
+        System.out.println("subject monstros "+jugador.valores_login.getSubjectMosntruos());
+        System.out.println("url "+jugador.valores_login.getUrl());
     }
 }

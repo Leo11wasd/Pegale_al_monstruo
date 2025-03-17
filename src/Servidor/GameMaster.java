@@ -115,7 +115,7 @@ public class GameMaster {
 
             //Se manda al ganador.
             System.out.println("LLEGUE: "+ganadorActual);
-            System.out.println("Puntos: "+puntaje.get(ganadorActual));
+            System.out.println("Puntos: "+puntaje.get(0));
             sendGanadorEvent(ganadorActual);
 
 
@@ -136,6 +136,7 @@ public class GameMaster {
 
         while(!hayGanador){
             System.out.println("aun no hay Ganador: "+ganadorActual);
+            System.out.println(puntaje.get(ganadorActual));
             int casilla = random.nextInt(9) + 1;
             sendMonstruoEvent(String.valueOf(casilla));
 

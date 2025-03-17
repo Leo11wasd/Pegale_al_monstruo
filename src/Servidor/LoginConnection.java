@@ -35,11 +35,12 @@ public class LoginConnection extends Thread {
             LoginResponse lr;
             if(gameMaster.idValido(id)){
                 String ip = InetAddress.getLocalHost().getHostAddress();
-                lr = new LoginResponse("tcp://" + ip + ":61616",GameMaster.getSubjectMonstruo(),GameMaster.getSubjectGanador(),gameMaster.getPuertoHit(),true);
+                //"tcp://" + ip + ":61616"
+                lr = new LoginResponse("tcp://" + ip + ":61616",GameMaster.getSubjectMonstruo(),GameMaster.getSubjectGanador(),gameMaster.getPuertoHit(),true,ip);
                 gameMaster.registrarJugador(id);
             }
             else{
-                lr = new LoginResponse("","","",-1,false);
+                lr = new LoginResponse("","","",-1,false,"");
             }
 
             out.writeObject(lr);

@@ -89,11 +89,17 @@ public class Jugador {
 
                 while (true) {
                     Message message = monstruoConsumer.receive();
-                    System.out.println("escuchando");
+                   // System.out.println("escuchando");
+                    System.out.println("mensaje hit "+this.tablero.manda_mensaje_hit);
+                    if(this.tablero.manda_mensaje_hit){
+                        System.out.println("hay que mandar mensaje");
+                        this.tablero.manda_mensaje_hit = false;
+                        notifica_hit();
+                    }
                     if (message instanceof TextMessage) {
-                        System.out.println("Mensaje recibido: " + message.toString());
+                        //System.out.println("Mensaje recibido: " + message.toString());
                         String monstruoMsg = ((TextMessage) message).getText();
-                        System.out.println("Mensaje de monstruo recibido: " + monstruoMsg);
+                        //System.out.println("Mensaje de monstruo recibido: " + monstruoMsg);
                         // Al recibir un mensaje de monstruo, se actualiza el grid
                         int coordenadas = Integer.parseInt(monstruoMsg);
                         //0 indexamos
@@ -152,12 +158,13 @@ public class Jugador {
 
 
     public void notifica_hit() {
+        System.out.println(this.valores_login.getIp());
         try {
-            if (this.hit_socket == null) {
-                this.hit_socket = new Socket(this.valores_login.getUrl(), this.valores_login.getPuertoHit());
-            }
+            //if (this.hit_socket == null) {
+                this.hit_socket = new Socket(this.valores_login.getIp(), this.valores_login.getPuertoHit());
+            //}
             //s = new Socket("127.0.0.1", serverPort);
-            ObjectOutputStream out = new ObjectOutputStream(this.socket_login.getOutputStream());
+            ObjectOutputStream out = new ObjectOutputStream(this.hit_socket.getOutputStream());
             //creo q ya no recibe nada, solamente envia.
             HitMessage mensajeHit = new HitMessage(Integer.toString(this.id_usuario), this.hitCounter);
             this.hitCounter++;

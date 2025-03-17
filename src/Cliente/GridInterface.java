@@ -100,7 +100,7 @@ public class GridInterface extends JFrame {
         String imagePath;
         if (poner_topo) {
             //System.out.println("poner_topo");
-            imagePath = "/assets/topo.png";
+            imagePath = "/assets/topo.jpg";
 
         } else {
             //System.out.printf("poner_pasto");

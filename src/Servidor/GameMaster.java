@@ -144,6 +144,7 @@ public class GameMaster {
 
             if(ganadorActual != ""){
                 hayGanador = true;
+                System.out.println("Ganador: "+ganadorActual);
             }
         }
 

@@ -2,7 +2,7 @@ package Servidor;
 
 public class ServerLauncher {
     public static void main(String[] args) {
-        int golpes = 5;
+        int golpes = 3;
         int tiempoEnvios = 3000;
 
 
@@ -11,8 +11,6 @@ public class ServerLauncher {
 
         new Thread(() -> gm.startLoginListner()).start();
         new Thread(() -> gm.startHitListner()).start();
-
-
         gm.play();
     }
 }

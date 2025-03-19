@@ -29,7 +29,6 @@ public class HitConnection extends Thread {
     @Override
     public void run() {
 
-
         try {
             while (true) {
                 HitMessage msg = (HitMessage) in.readObject();
@@ -38,6 +37,7 @@ public class HitConnection extends Thread {
                 int tiempo = msg.getLamportTimestamp();
 
                 gameMaster.añadePuntaje(id, tiempo);
+                System.out.println(id + " " + tiempo);
             }
 
 

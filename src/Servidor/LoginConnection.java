@@ -33,13 +33,16 @@ public class LoginConnection extends Thread {
             String id = in.readUTF();
 
             LoginResponse lr;
+            String ip = InetAddress.getLocalHost().getHostAddress();
             if(gameMaster.idValido(id)){
-                String ip = InetAddress.getLocalHost().getHostAddress();
-                lr = new LoginResponse("tcp://" + ip + ":61616",GameMaster.getSubjectMonstruo(),GameMaster.getSubjectGanador(),gameMaster.getPuertoHit(),true);
+                //"tcp://" + ip + ":61616"
+                lr = new LoginResponse("tcp://" + ip + ":61616",GameMaster.getSubjectMonstruo(),GameMaster.getSubjectGanador(),gameMaster.getPuertoHit(),true,ip);
                 gameMaster.registrarJugador(id);
             }
             else{
-                lr = new LoginResponse("","","",-1,false);
+                //gameMaster.registrarJugador(id);
+                //lr = new LoginResponse("","","",-1,false,"");
+                lr = new LoginResponse("tcp://" + ip + ":61616",GameMaster.getSubjectMonstruo(),GameMaster.getSubjectGanador(),gameMaster.getPuertoHit(),true,ip);
             }
 
             out.writeObject(lr);

@@ -24,6 +24,7 @@ public class Jugador {
 
     int topoActual;
     int rondaActual;
+    ObjectOutputStream outHit;
 
 
     public Jugador(String master_login_Ip, int master_login_Port, int id_usuario) {
@@ -53,8 +54,11 @@ public class Jugador {
 
 
             this.valores_login = (LoginResponse) in.readObject();
+            this.hit_socket = new Socket(this.valores_login.getIp(), this.valores_login.getPuertoHit());
+
             //System.out.println("Received data: "+this.respuesta.toString());
 
+             outHit = new ObjectOutputStream(this.hit_socket.getOutputStream());
         } catch (UnknownHostException | ClassNotFoundException e) {
             System.out.println("Sock:" + e.getMessage());
 
@@ -85,27 +89,29 @@ public class Jugador {
         Thread monstruoListenerThread = new Thread(() -> {
             try {
                 ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(this.valores_login.getUrl());
+                factory.setTrustAllPackages(true);
                 Connection jmsConnection = factory.createConnection();
                 jmsConnection.start();
                 Session jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 Destination monstruoTopic = jmsSession.createTopic(this.valores_login.getSubjectMosntruos());
                 MessageConsumer monstruoConsumer = jmsSession.createConsumer(monstruoTopic);
 
+
                 while (true) {
                     Message message = monstruoConsumer.receive();
                     // Ahora comprobamos si es un ObjectMessage
                     if (message instanceof ObjectMessage) {
+                        ObjectMessage objectMessage = (ObjectMessage) message;
+                        MensajeTopo mensajeTopo = (MensajeTopo) objectMessage.getObject(); // Cast directo
 
-                        int coordenadas = ((MensajeTopo) message).casilla;
+                        int coordenadas = mensajeTopo.casilla;
                         coordenadas--;
-                        topoActual = ((MensajeTopo) message).numTopo;
-                        rondaActual =  ((MensajeTopo) message).Ronda;
+                        topoActual = mensajeTopo.numTopo;
+                        rondaActual = mensajeTopo.Ronda;
 
-                        //limpiamos el tablero
+                        // Limpiamos el tablero
                         this.tablero.limpiar();
-                        //ponemos el nuevo topo
-                        //int i = coordenadas / 3;
-                        //int j = coordenadas % 3;
+                        // Ponemos el nuevo topo
                         this.tablero.muestra_topo(coordenadas);
                     }
                }
@@ -155,15 +161,15 @@ public class Jugador {
         System.out.println(this.valores_login.getIp());
         try {
             //if (this.hit_socket == null) {
-                this.hit_socket = new Socket(this.valores_login.getIp(), this.valores_login.getPuertoHit());
+
             //}
             //s = new Socket("127.0.0.1", serverPort);
-            ObjectOutputStream out = new ObjectOutputStream(this.hit_socket.getOutputStream());
+
             //creo q ya no recibe nada, solamente envia.
             HitMessage mensajeHit = new HitMessage(Integer.toString(this.id_usuario),topoActual,rondaActual );
             this.hitCounter++;
-            out.writeObject(mensajeHit);
-            out.flush();
+            outHit.writeObject(mensajeHit);
+            outHit.flush();
             System.out.println("Se envió el hit");
         }      // UTF is a string encoding
         catch (Exception e) {

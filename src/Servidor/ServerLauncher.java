@@ -2,8 +2,8 @@ package Servidor;
 
 public class ServerLauncher {
     public static void main(String[] args) {
-        int golpes = 3;
-        int tiempoEnvios = 3000;
+        int golpes = 5;
+        int tiempoEnvios = 5000;
 
 
 

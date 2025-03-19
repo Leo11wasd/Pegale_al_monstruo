@@ -13,7 +13,7 @@ public class Pruebas_jugadores extends Thread {
             // Aquí puedes usar jugador1 dentro del hilo
         });
         thread.start();
-/*
+
 
         Thread thread2 = new Thread(() -> {
             Jugador jugador2 = new Jugador("127.0.0.1", 49152, 1);
@@ -50,6 +50,6 @@ public class Pruebas_jugadores extends Thread {
             jugador5.inicializa_escucha_Ganador();
         });
         thread5.start();
-*/
+
     }
 }

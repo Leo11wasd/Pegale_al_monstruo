@@ -37,7 +37,7 @@ public class HitConnection extends Thread {
                 int tiempo = msg.getLamportTimestamp();
                 int ronda = msg.getRonda();
                 gameMaster.añadePuntaje(id, tiempo,ronda);
-                System.out.println(id + " " + tiempo);
+                //System.out.println(id + " " + tiempo+" "+ronda);
             }
 
 

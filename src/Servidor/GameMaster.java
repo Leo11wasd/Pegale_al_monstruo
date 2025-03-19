@@ -26,7 +26,8 @@ public class GameMaster {
     private ConcurrentHashMap<String, Integer> puntaje;
     private int numTopos;
     private int ronda=0;
-    private boolean[] golpeado;
+    private int topoMaximo;
+
 
     //Objetos del JMS
     private Connection connection;
@@ -139,9 +140,12 @@ public class GameMaster {
         boolean hayGanador = false;
         Random random = new Random();
         numTopos = 0;
-        golpeado = new boolean[mx]; // Asegúrate de que 'mx' tenga sentido o usa otro tamaño apropiado
+        topoMaximo = 0;
 
-        while(!hayGanador) {
+
+        while(!hayGanador)
+        {
+            //System.out.println("numTopos: "+numTopos);
             numTopos++;
             int casilla = random.nextInt(9) + 1;
 
@@ -203,9 +207,11 @@ public class GameMaster {
     }
 
     public synchronized void añadePuntaje(String id,int tiempo, int ronda) {
-        if(!golpeado[tiempo]&& ganadorActual == ""&&this.ronda==ronda) {
+        if(topoMaximo<tiempo && ganadorActual == ""&&this.ronda==ronda) {
             puntaje.put(id, puntaje.get(id) + 1);
-            golpeado[tiempo] = true;
+            topoMaximo=tiempo;
+            System.out.println("Punto para id: "+id);
+            System.out.println("Lleva los siguientes puntajes: "+puntaje.get(id));
             if (puntaje.get(id) == golpes ) {
                ganadorActual = id;
             }

@@ -80,7 +80,8 @@ public class StressLauncher {
 
         double promedioTotal=tiempoTotal/golpesTotal;
         System.out.println("Promedio total:"+tiempoTotal/golpesTotal);
-        System.out.println("Promedio Login: "+promedioLogin/jugadores);
+        promedioLogin=promedioLogin/jugadores;
+        System.out.println("Promedio Login: "+promedioLogin);
 
         System.out.println("Desviacion Estandar");
         for (int i = 0; i < jugadores; i++) {
@@ -92,7 +93,7 @@ public class StressLauncher {
 
             desvStandJ[i] = Math.sqrt(sumaCuadrados / clientes[i].contador);
             System.out.println(i+" "+desvStandJ[i]);
-            cuadradosLogin+=(clientes[i].tiempoLogin-promedioLogin)*(clientes[i].contador-promedioLogin);
+            cuadradosLogin+=(clientes[i].tiempoLogin-promedioLogin)*(clientes[i].tiempoLogin-promedioLogin);
         }
         System.out.println("Desviacion Estandar total:"+Math.sqrt(sumatoriaEventosCuadrado/golpesTotal));
         System.out.println("Desviacion Estandar login:"+Math.sqrt(cuadradosLogin/jugadores));

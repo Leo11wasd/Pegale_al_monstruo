@@ -45,6 +45,8 @@ public class GameMasterEstresa {
     private int tiempoMinimo;
     public static final int mx = Integer.MAX_VALUE;
 
+
+
     public GameMasterEstresa(int golpes,int tiempoEnvios) {
         this.golpes = golpes;
         this.tiempoEnvios = tiempoEnvios;
@@ -113,6 +115,7 @@ public class GameMasterEstresa {
 
 
         while(true){
+
             try {
                 ronda++;
                 juegaRonda();
@@ -120,9 +123,7 @@ public class GameMasterEstresa {
                 e.printStackTrace();
             }
 
-            //Se manda al ganador.
-            System.out.println("LLEGUE: "+ganadorActual);
-            System.out.println("Puntos: "+puntaje.get(ganadorActual));
+
             sendGanadorEvent(ganadorActual);
 
 
@@ -155,12 +156,12 @@ public class GameMasterEstresa {
 
             // Enviar el objeto de MensajeTopo
             sendMonstruoEvent(mensajeTopo);
-
+            //System.out.println("Enviando");
             Thread.sleep(tiempoEnvios);
 
             if (!ganadorActual.equals("")) {
                 hayGanador = true;
-                System.out.println("Ganador: " + ganadorActual);
+                //System.out.println("Ganador: " + ganadorActual);
             }
         }
     }
@@ -211,8 +212,8 @@ public class GameMasterEstresa {
         if(topoMaximo<tiempo && ganadorActual == ""&&this.ronda==ronda) {
             puntaje.put(id, puntaje.get(id) + 1);
             topoMaximo=tiempo;
-            System.out.println("Punto para id: "+id);
-            System.out.println("Lleva los siguientes puntajes: "+puntaje.get(id));
+            //System.out.println("Punto para id: "+id);
+            //System.out.println("Lleva los siguientes puntajes: "+puntaje.get(id));
             if (puntaje.get(id) == golpes ) {
                 ganadorActual = id;
             }

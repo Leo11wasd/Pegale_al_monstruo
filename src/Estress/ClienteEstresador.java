@@ -46,6 +46,7 @@ public class ClienteEstresador extends Thread{
         this.rondaCorte=rondas+1;
 
         tiempos=new LinkedList<>();
+        this.running=true;
 
     }
 
@@ -98,7 +99,7 @@ public class ClienteEstresador extends Thread{
             return false;
         }
         else{
-            System.out.println("se realizo la conexión con "+this.master_login_Ip+":"+this.master_login_Port);
+            //System.out.println("se realizo la conexión con "+this.master_login_Ip+":"+this.master_login_Port);
             return this.valores_login.isStatus();
         }
     }
@@ -121,7 +122,7 @@ public class ClienteEstresador extends Thread{
                     if (message instanceof ObjectMessage) {
                         ObjectMessage objectMessage = (ObjectMessage) message;
                         MensajeTopo mensajeTopo = (MensajeTopo) objectMessage.getObject(); // Cast directo
-
+                        //System.out.println("Mensaje recibido: " + mensajeTopo.toString());
                         topoActual = mensajeTopo.numTopo;
                         rondaActual = mensajeTopo.Ronda;
 
@@ -133,7 +134,9 @@ public class ClienteEstresador extends Thread{
                         notifica_hit();
 
                     }
+                   // System.out.println(running);
                 }
+                //System.out.println(running);
                 monstruoConsumer.close();
                 jmsSession.close();
                 jmsConnection.close();
@@ -162,16 +165,17 @@ public class ClienteEstresador extends Thread{
                         //el mensaje que llega es "El ganador de este juego es : " + ganadorActual+". El siguiente juego comenzara pronto."
                         //System.out.println("Mensaje de ganador recibido: " + ganadorMsg);
                         int id_ganador = Integer.parseInt(ganadorMsg);
-                        System.out.println("idganador "+id_ganador);
+                        /*System.out.println("idganador "+id_ganador);
                         if(id_ganador!=-1){
                             if (id_ganador == this.id_usuario) {
                                 JOptionPane.showMessageDialog(null, "Dale campeon, dale campeon, dale campeon, dale campeon", "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
                             } else {
                                 JOptionPane.showMessageDialog(null, "Perdiste :c", "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
                             }
-                        }
+                        }*/
                     }
                 }
+
                 ganadorConsumer.close();
                 jmsSession.close();
                 jmsConnection.close();

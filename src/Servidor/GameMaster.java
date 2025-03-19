@@ -23,6 +23,8 @@ public class GameMaster {
     private int golpes; //golpes necesarios para ganar un juego
     private int tiempoEnvios;
     private ConcurrentHashMap<String, Integer> puntaje;
+    private int numTopos;
+    private boolean[] golpeado;
 
     //Objetos del JMS
     private Connection connection;
@@ -133,10 +135,13 @@ public class GameMaster {
     public void juegaRonda() throws InterruptedException {
         boolean hayGanador = false;
         Random random = new Random();
+        numTopos=0;
+        golpeado=new boolean[mx];
 
         while(!hayGanador){
-            System.out.println("aun no hay Ganador: "+ganadorActual);
-            System.out.println(puntaje.get(ganadorActual));
+            /*System.out.println("aun no hay Ganador: "+ganadorActual);
+            System.out.println(puntaje.get(ganadorActual));*/
+            numTopos++;
             int casilla = random.nextInt(9) + 1;
             sendMonstruoEvent(String.valueOf(casilla));
 
@@ -192,13 +197,12 @@ public class GameMaster {
         }
     }
 
-    public void añadePuntaje(String id,int tiempo) {
-        puntaje.put(id,puntaje.get(id)+1);
-
-        if(puntaje.get(id)==golpes){
-            if(tiempo<tiempoMinimo){
-                ganadorActual=id;
-                tiempoMinimo=tiempo;
+    public synchronized void añadePuntaje(String id,int tiempo) {
+        if(!golpeado[tiempo]&& ganadorActual == "") {
+            puntaje.put(id, puntaje.get(id) + 1);
+            golpeado[tiempo] = true;
+            if (puntaje.get(id) == golpes ) {
+               ganadorActual = id;
             }
         }
     }

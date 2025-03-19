@@ -1,5 +1,6 @@
 package Servidor;
 
+import Mensajes.MensajeTopo;
 import jakarta.jms.*;
 
 import org.apache.activemq.ActiveMQConnection;
@@ -24,6 +25,7 @@ public class GameMaster {
     private int tiempoEnvios;
     private ConcurrentHashMap<String, Integer> puntaje;
     private int numTopos;
+    private int ronda=0;
     private boolean[] golpeado;
 
     //Objetos del JMS
@@ -110,6 +112,7 @@ public class GameMaster {
 
         while(true){
             try {
+                ronda++;
                 juegaRonda();
             } catch (InterruptedException e) {
                e.printStackTrace();
@@ -117,7 +120,7 @@ public class GameMaster {
 
             //Se manda al ganador.
             System.out.println("LLEGUE: "+ganadorActual);
-            System.out.println("Puntos: "+puntaje.get(0));
+            System.out.println("Puntos: "+puntaje.get(ganadorActual));
             sendGanadorEvent(ganadorActual);
 
 
@@ -135,24 +138,26 @@ public class GameMaster {
     public void juegaRonda() throws InterruptedException {
         boolean hayGanador = false;
         Random random = new Random();
-        numTopos=0;
-        golpeado=new boolean[mx];
+        numTopos = 0;
+        golpeado = new boolean[mx]; // Asegúrate de que 'mx' tenga sentido o usa otro tamaño apropiado
 
-        while(!hayGanador){
-            /*System.out.println("aun no hay Ganador: "+ganadorActual);
-            System.out.println(puntaje.get(ganadorActual));*/
+        while(!hayGanador) {
             numTopos++;
             int casilla = random.nextInt(9) + 1;
-            sendMonstruoEvent(String.valueOf(casilla));
+
+            // Crear el objeto MensajeTopo con la casilla, el número de topo actual y la ronda
+            MensajeTopo mensajeTopo = new MensajeTopo(casilla, numTopos, ronda);
+
+            // Enviar el objeto de MensajeTopo
+            sendMonstruoEvent(mensajeTopo);
 
             Thread.sleep(tiempoEnvios);
 
-            if(ganadorActual != ""){
+            if (!ganadorActual.equals("")) {
                 hayGanador = true;
-                System.out.println("Ganador: "+ganadorActual);
+                System.out.println("Ganador: " + ganadorActual);
             }
         }
-
     }
     public boolean idValido(String id) {
         return !puntaje.containsKey(id);
@@ -179,10 +184,10 @@ public class GameMaster {
         puntaje.put(idJugador,0);
     }
 
-    public void sendMonstruoEvent(String msg) {
+    public void sendMonstruoEvent(MensajeTopo msg) {
         try {
-            TextMessage textMessage = session.createTextMessage(msg);
-            producerMonstruo.send(textMessage);
+            ObjectMessage objectMessage = session.createObjectMessage(msg);
+            producerMonstruo.send(objectMessage);
         } catch (JMSException e) {
             e.printStackTrace();
         }
@@ -197,8 +202,8 @@ public class GameMaster {
         }
     }
 
-    public synchronized void añadePuntaje(String id,int tiempo) {
-        if(!golpeado[tiempo]&& ganadorActual == "") {
+    public synchronized void añadePuntaje(String id,int tiempo, int ronda) {
+        if(!golpeado[tiempo]&& ganadorActual == ""&&this.ronda==ronda) {
             puntaje.put(id, puntaje.get(id) + 1);
             golpeado[tiempo] = true;
             if (puntaje.get(id) == golpes ) {

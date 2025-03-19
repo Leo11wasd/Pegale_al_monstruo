@@ -5,6 +5,7 @@ import java.io.*;
 
 import Mensajes.LoginResponse;
 import Mensajes.HitMessage;
+import Mensajes.MensajeTopo;
 import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
@@ -21,13 +22,16 @@ public class Jugador {
     int hitCounter;
     GridInterface tablero;
 
+    int topoActual;
+    int rondaActual;
+
 
     public Jugador(String master_login_Ip, int master_login_Port, int id_usuario) {
         this.master_login_Ip = master_login_Ip;
         this.master_login_Port = master_login_Port;
         this.id_usuario = id_usuario;
         this.hitCounter = 0;
-        tablero = new GridInterface();
+        tablero = new GridInterface(this);
 
     }
 
@@ -89,21 +93,13 @@ public class Jugador {
 
                 while (true) {
                     Message message = monstruoConsumer.receive();
-                   // System.out.println("escuchando");
-                    System.out.println("mensaje hit "+this.tablero.manda_mensaje_hit);
-                    if(this.tablero.manda_mensaje_hit){
-                        System.out.println("hay que mandar mensaje");
-                        this.tablero.manda_mensaje_hit = false;
-                        notifica_hit();
-                    }
-                    if (message instanceof TextMessage) {
-                        //System.out.println("Mensaje recibido: " + message.toString());
-                        String monstruoMsg = ((TextMessage) message).getText();
-                        //System.out.println("Mensaje de monstruo recibido: " + monstruoMsg);
-                        // Al recibir un mensaje de monstruo, se actualiza el grid
-                        int coordenadas = Integer.parseInt(monstruoMsg);
-                        //0 indexamos
+                    // Ahora comprobamos si es un ObjectMessage
+                    if (message instanceof ObjectMessage) {
+
+                        int coordenadas = ((MensajeTopo) message).casilla;
                         coordenadas--;
+                        topoActual = ((MensajeTopo) message).numTopo;
+                        rondaActual =  ((MensajeTopo) message).Ronda;
 
                         //limpiamos el tablero
                         this.tablero.limpiar();
@@ -112,9 +108,7 @@ public class Jugador {
                         //int j = coordenadas % 3;
                         this.tablero.muestra_topo(coordenadas);
                     }
-
-
-                }
+               }
             } catch (JMSException e) {
                 e.printStackTrace();
             }
@@ -166,7 +160,7 @@ public class Jugador {
             //s = new Socket("127.0.0.1", serverPort);
             ObjectOutputStream out = new ObjectOutputStream(this.hit_socket.getOutputStream());
             //creo q ya no recibe nada, solamente envia.
-            HitMessage mensajeHit = new HitMessage(Integer.toString(this.id_usuario), this.hitCounter);
+            HitMessage mensajeHit = new HitMessage(Integer.toString(this.id_usuario),topoActual,rondaActual );
             this.hitCounter++;
             out.writeObject(mensajeHit);
             out.flush();

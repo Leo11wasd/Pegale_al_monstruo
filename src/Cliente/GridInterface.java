@@ -20,8 +20,11 @@ public class GridInterface extends JFrame {
     public boolean tiene_topo0 = false;
     public boolean manda_mensaje_hit = false;
 
+    private Jugador j;
 
-    public GridInterface() {
+
+    public GridInterface(Jugador j) {
+        this.j = j;
         setTitle("Grid Interface");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 600);
@@ -165,34 +168,28 @@ public class GridInterface extends JFrame {
         marca(pos, true);
     }
 
+    // Al hacer clic en un botón, si el topo está presente en esa celda se llama directamente al método notifica_hit del jugador.
     private void button1Clicked() {
         setImageToLabel(0, false);
-        //verificamos si el topo esta aqui
         if (tiene_topo0) {
             marca(0, false);
-            //manda el mensaje
-            this.manda_mensaje_hit = true;
-
+            j.notifica_hit();
         }
     }
 
     private void button2Clicked() {
         setImageToLabel(1, false);
-        //verificamos si el topo esta aqui
         if (tiene_topo1) {
             marca(1, false);
-            //manda el mensaje
-            this.manda_mensaje_hit = true;
+            j.notifica_hit();
         }
     }
 
     private void button3Clicked() {
         setImageToLabel(2, false);
-        //verificamos si el topo esta aqui
         if (tiene_topo2) {
-            marca(0, false);
-            //manda el mensaje
-            this.manda_mensaje_hit = true;
+            marca(2, false);
+            j.notifica_hit();
         }
     }
 
@@ -200,7 +197,7 @@ public class GridInterface extends JFrame {
         setImageToLabel(3, false);
         if (tiene_topo3) {
             marca(3, false);
-            this.manda_mensaje_hit = true;
+            j.notifica_hit();
         }
     }
 
@@ -208,7 +205,7 @@ public class GridInterface extends JFrame {
         setImageToLabel(4, false);
         if (tiene_topo4) {
             marca(4, false);
-            this.manda_mensaje_hit = true;
+            j.notifica_hit();
         }
     }
 
@@ -216,7 +213,7 @@ public class GridInterface extends JFrame {
         setImageToLabel(5, false);
         if (tiene_topo5) {
             marca(5, false);
-            this.manda_mensaje_hit = true;
+            j.notifica_hit();
         }
     }
 
@@ -224,7 +221,7 @@ public class GridInterface extends JFrame {
         setImageToLabel(6, false);
         if (tiene_topo6) {
             marca(6, false);
-            this.manda_mensaje_hit = true;
+            j.notifica_hit();
         }
     }
 
@@ -232,7 +229,7 @@ public class GridInterface extends JFrame {
         setImageToLabel(7, false);
         if (tiene_topo7) {
             marca(7, false);
-            this.manda_mensaje_hit = true;
+            j.notifica_hit();
         }
     }
 
@@ -240,7 +237,7 @@ public class GridInterface extends JFrame {
         setImageToLabel(8, false);
         if (tiene_topo8) {
             marca(8, false);
-            this.manda_mensaje_hit = true;
+            j.notifica_hit();
         }
     }
 

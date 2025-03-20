@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="activemq-all-6.1.6" level="project" />
-    <orderEntry type="library" name="log4j-api-2.24.3" level="project" />
+    <orderEntry type="library" name="log4j-api-2.24.1" level="project" />
+    <orderEntry type="library" name="activemq-all-6.1.5" level="project" />
   </component>
 </module>

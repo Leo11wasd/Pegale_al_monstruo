@@ -1,18 +1,19 @@
-package Servidor;
+package Estress;
 
 import Mensajes.HitMessage;
+import Servidor.GameMaster;
 
 import java.net.*;
 import java.io.*;
 
-public class HitConnection extends Thread {
+public class HitConnectionEstres extends Thread {
 
     private Socket clientSocket;
-    private GameMaster gameMaster;
+    private GameMasterEstresa gameMaster;
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    public HitConnection(Socket clientSocket, GameMaster gameMaster) {
+    public HitConnectionEstres(Socket clientSocket, GameMasterEstresa gameMaster) {
         this.clientSocket = clientSocket;
         this.gameMaster = gameMaster;
 
@@ -37,6 +38,9 @@ public class HitConnection extends Thread {
                 int tiempo = msg.getLamportTimestamp();
                 int ronda = msg.getRonda();
                 gameMaster.añadePuntaje(id, tiempo,ronda);
+
+                out.writeBoolean(true);
+                out.flush();
                 //System.out.println(id + " " + tiempo+" "+ronda);
             }
 

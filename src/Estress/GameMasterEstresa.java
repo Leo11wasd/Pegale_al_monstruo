@@ -1,4 +1,4 @@
-package Servidor;
+package Estress;
 
 import Mensajes.MensajeTopo;
 import jakarta.jms.*;
@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GameMaster {
+//Solo cambia que responde un true a cada hit
+public class GameMasterEstresa {
     private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;
     private static String subjectMonstruo = "PegaleAlMonstruo";
     private static String subjectGanador ="Ganador";
@@ -44,7 +45,9 @@ public class GameMaster {
     private int tiempoMinimo;
     public static final int mx = Integer.MAX_VALUE;
 
-    public GameMaster(int golpes,int tiempoEnvios) {
+
+
+    public GameMasterEstresa(int golpes,int tiempoEnvios) {
         this.golpes = golpes;
         this.tiempoEnvios = tiempoEnvios;
 
@@ -87,7 +90,7 @@ public class GameMaster {
             while (true) {
                 //System.out.println("Waiting for messages...");
                 Socket clientSocket = listenSocket.accept();  // Listens for a connection to be made to this socket and accepts it. The method blocks until a connection is made.
-                LoginConnection c = new LoginConnection(clientSocket,this);
+                LoginConnectionEstres c = new LoginConnectionEstres(clientSocket,this);
                 c.start();
             }
         } catch (IOException e) {
@@ -100,7 +103,7 @@ public class GameMaster {
             while (true) {
                 //System.out.println("Waiting for messages...");
                 Socket clientSocket = listenSocket.accept();  // Listens for a connection to be made to this socket and accepts it. The method blocks until a connection is made.
-                HitConnection c = new HitConnection(clientSocket,this);
+                HitConnectionEstres c = new HitConnectionEstres(clientSocket,this);
                 c.start();
             }
         } catch (IOException e) {
@@ -112,16 +115,15 @@ public class GameMaster {
 
 
         while(true){
+
             try {
                 ronda++;
                 juegaRonda();
             } catch (InterruptedException e) {
-               e.printStackTrace();
+                e.printStackTrace();
             }
 
-            //Se manda al ganador.
-            System.out.println("LLEGUE: "+ganadorActual);
-            System.out.println("Puntos: "+puntaje.get(ganadorActual));
+
             sendGanadorEvent(ganadorActual);
 
 
@@ -154,12 +156,12 @@ public class GameMaster {
 
             // Enviar el objeto de MensajeTopo
             sendMonstruoEvent(mensajeTopo);
-
+            //System.out.println("Enviando");
             Thread.sleep(tiempoEnvios);
 
             if (!ganadorActual.equals("")) {
                 hayGanador = true;
-                System.out.println("Ganador: " + ganadorActual);
+                //System.out.println("Ganador: " + ganadorActual);
             }
         }
     }
@@ -210,10 +212,10 @@ public class GameMaster {
         if(topoMaximo<tiempo && ganadorActual == ""&&this.ronda==ronda) {
             puntaje.put(id, puntaje.get(id) + 1);
             topoMaximo=tiempo;
-            System.out.println("Punto para id: "+id);
-            System.out.println("Lleva los siguientes puntajes: "+puntaje.get(id));
+            //System.out.println("Punto para id: "+id);
+            //System.out.println("Lleva los siguientes puntajes: "+puntaje.get(id));
             if (puntaje.get(id) == golpes ) {
-               ganadorActual = id;
+                ganadorActual = id;
             }
         }
     }

@@ -36,7 +36,7 @@ public class pruebasServidor {
     private static Socket hitSocket;
     private static ObjectOutputStream hitOut;
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         // Paso 1: Hacer login vía TCP
         LoginResponse loginResponse = doLogin();
         if (loginResponse == null) {
@@ -131,7 +131,7 @@ public class pruebasServidor {
     /**
      * Realiza el proceso de login conectándose al servidor de login.
      */
-    private static LoginResponse doLogin() {
+    /*private static LoginResponse doLogin() {
         try (Socket socket = new Socket(SERVER_IP, LOGIN_PORT);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
@@ -157,7 +157,7 @@ public class pruebasServidor {
     /**
      * Envía un hit al servidor de golpes usando la conexión persistente.
      */
-    private static void sendHit() {
+   /* private static void sendHit() {
         // Crea un objeto HitMessage con el ID del cliente y el contador secuencial
         HitMessage hit = new HitMessage(CLIENT_ID, hitCounter);
         hitCounter++; // Incrementa el contador para el siguiente hit
@@ -169,5 +169,5 @@ public class pruebasServidor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

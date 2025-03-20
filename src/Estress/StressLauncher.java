@@ -12,13 +12,15 @@ public class StressLauncher {
     int golpes;
     int ronda;
     int tiempoEnvios;
+    String fileName;
     ClienteEstresador[] clientes;
 
-    public StressLauncher(int jugadores, int golpes, int ronda, int tiempoEnvios) {
+    public StressLauncher(int jugadores, int golpes, int ronda, int tiempoEnvios, String fileName) {
         this.jugadores = jugadores;
         this.golpes = golpes;
         this.ronda = ronda;
         this.tiempoEnvios = tiempoEnvios;
+        this.fileName = fileName;
         clientes = new ClienteEstresador[jugadores];
     }
 
@@ -61,6 +63,7 @@ public class StressLauncher {
         double tiempoTotal = 0;
         double[] promedioJ = new double[jugadores];
         double promedioLogin = 0;
+        int conexionesRechazadas = 0;
 
         // Para la desviación estándar individual de cada jugador
         double[] desvStandJ = new double[jugadores];
@@ -69,33 +72,36 @@ public class StressLauncher {
 
         double sumatoriaEventosCuadrado = 0.0;
         double cuadradosLogin = 0;
-        String fileName = "salida.csv";
         System.out.println("inicio proceso estadisticas");
-        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName, true))) {  // El 'true' permite agregar al final
-            writer.println("Promedios");
+        try (PrintWriter writer = new PrintWriter(new FileWriter(this.fileName, true))) {  // El 'true' permite agregar al final
+            //writer.println("Promedios");
+
             for (int i = 0; i < jugadores; i++) {
+                if(clientes[i].tiempos.size()==0){
+                    conexionesRechazadas++;
+                }
                 tiempoJugador = 0;
                 for (double t : clientes[i].tiempos) {
                     tiempoJugador += t;
                 }
                 promedioJ[i] = tiempoJugador / clientes[i].contador;
 
-                writer.println
-                        (i + "," + promedioJ[i]);
+                /*writer.println
+                        (i + "," + promedioJ[i]);*/
                 tiempoTotal += tiempoJugador;
                 golpesTotal += clientes[i].contador;
                 promedioLogin += clientes[i].tiempoLogin;
             }
 
             double promedioTotal = tiempoTotal / golpesTotal;
-            writer.println
-                    ("Promedio total:" + tiempoTotal / golpesTotal);
+            //writer.println
+                    //("Promedio total:" + tiempoTotal / golpesTotal);
             promedioLogin = promedioLogin / jugadores;
-            writer.println
-                    ("Promedio Login: " + promedioLogin);
+            //writer.println
+                    //("Promedio Login: " + promedioLogin);
 
-            writer.println
-                    ("Desviacion Estandar");
+            //writer.println
+                    //("Desviacion Estandar");
             for (int i = 0; i < jugadores; i++) {
                 double sumaCuadrados = 0.0;
                 for (double t : clientes[i].tiempos) {
@@ -104,22 +110,32 @@ public class StressLauncher {
                 }
 
                 desvStandJ[i] = Math.sqrt(sumaCuadrados / clientes[i].contador);
-                writer.println
-                        (i + "," + desvStandJ[i]);
+                /*writer.println
+                        (i + "," + desvStandJ[i]);*/
                 cuadradosLogin += (clientes[i].tiempoLogin - promedioLogin) * (clientes[i].tiempoLogin - promedioLogin);
             }
-            writer.println
-                    ("Desviacion Estandar total:" + Math.sqrt(sumatoriaEventosCuadrado / golpesTotal));
-            writer.println
-                    ("Desviacion Estandar login:" + Math.sqrt(cuadradosLogin / jugadores));
+            //writer.println
+                    //("Desviacion Estandar total:" + Math.sqrt(sumatoriaEventosCuadrado / golpesTotal));
+            //writer.println
+              //      ("Desviacion Estandar login:" + Math.sqrt(cuadradosLogin / jugadores));
+
+            //writer.println
+              //      ("Conexiones rechazadas: " + conexionesRechazadas);
+            writer.println(promedioTotal+","+promedioLogin+","+Math.sqrt(sumatoriaEventosCuadrado / golpesTotal)+","
+            +Math.sqrt(cuadradosLogin / jugadores)+","+conexionesRechazadas);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         System.out.println("finaliza proceso estadisticas");
     }
 
     public static void main(String[] args) {
-        StressLauncher st = new StressLauncher(50, 5, 5, 10);
+
+        String nombrei = "salida.csv";
+        StressLauncher st = new StressLauncher(150, 5, 5, 10, nombrei);
         st.start();
     }
+
 }
+

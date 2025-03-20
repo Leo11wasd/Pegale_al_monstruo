@@ -142,7 +142,7 @@ public class Jugador {
                         System.out.println("idganador "+id_ganador);
                         if(id_ganador!=-1){
                             if (id_ganador == this.id_usuario) {
-                                JOptionPane.showMessageDialog(null, "Dale campeon, dale campeon, dale campeon, dale campeon", "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "Felicidades, eres el ganador!", "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
                             } else {
                                 JOptionPane.showMessageDialog(null, "Perdiste :c", "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
                             }

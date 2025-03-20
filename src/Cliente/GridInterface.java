@@ -25,7 +25,7 @@ public class GridInterface extends JFrame {
 
     public GridInterface(Jugador j) {
         this.j = j;
-        setTitle("Grid Interface");
+        setTitle("¡Pégale a Riquelme!");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 600);
         setLayout(new GridLayout(3, 3));
@@ -39,7 +39,7 @@ public class GridInterface extends JFrame {
             labels[i].setHorizontalAlignment(JLabel.CENTER);
             labels[i].setVerticalAlignment(JLabel.CENTER);
 
-            JButton button = new JButton("Button " + (i + 1));
+            JButton button = new JButton("¡GOLPEA!");
 
             int index = i; // Necesario para usar en el listener
             button.addActionListener(new ActionListener() {
